@@ -76,10 +76,12 @@ grid.arrange(SAD.plot, SAC.plot, SAR.plot, spat.plot,
              layout_matrix = lay)
 }
 
+# ------------------------------------------------------------------------------
+
 S.max <- 50
 manipulate(
   plot.sim.com(S.pool=S, N.pool=N, spat.agg=spat.agg, evenness=evenness, S.max=S.max),
-  S = slider(10,S.max,step=10),
+  S = slider(10, S.max, step=10),
   N = slider(500,1000,step=100),
   evenness = slider(1,3),
   spat.agg = slider(0.02,1))

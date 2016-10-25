@@ -1,25 +1,26 @@
 plot.sim.com.grid <- function(S.pool, N.pool, spat.agg, evenness, resolution, cell.id){
-  set.seed(2299)
+  set.seed(229356)
   sim.com <- Sim.Thomas.Community(S = S.pool, N = N.pool, sigma=spat.agg, cv = evenness)
 
   require(raster)
-  require(ggplot2)
   require(broom)
-  require(plyr)
-  require(rgeos)
+
   # create the grid
   grid.rast <- raster(extent(c(0,1,0,1)), nrows=resolution, ncols=resolution)
-  grid.poly <- as(grid.rast, "SpatialPolygonsDataFrame")
-  grid.poly@data$id = 1:nrow(grid.poly@data)
+  grid.poly <- as(grid.rast, "SpatialPolygons")
+  #grid.poly@data$id = 1:nrow(grid.poly@data)
 
   # extract the focal cell
-  cell.poly <- grid.poly[cell.id]
+  cell.poly <- as(grid.poly, "SpatialPolygons")[cell.id]
   
   # prepare the grid and the cell for ggplot
   grid.poly.gg = tidy(grid.poly)
   cell.poly.gg = tidy(cell.poly)
 
 
+  SAD <- data.frame(specID = names(table(sim.com$SpecID)),
+                    abundance = as.integer(table(sim.com$SpecID)))
+  
   spat.plot <- ggplot(sim.com, aes(X,Y, color=SpecID)) +
     geom_point() +
     guides(color="none") +
@@ -28,6 +29,8 @@ plot.sim.com.grid <- function(S.pool, N.pool, spat.agg, evenness, resolution, ce
     theme_classic() +
     geom_polygon(data=grid.poly.gg, aes(y=lat, x=long, group=group), 
                  colour="grey", fill=NA) +
+    geom_polygon(data=cell.poly.gg, aes(y=lat, x=long, group=group), 
+                 colour="black", fill=NA, size=2) +
     theme(axis.text = element_text(size = rel(0.6)),
           axis.title = element_text(size = rel(0.6)),
           axis.text = element_text(size = rel(0.6)),
@@ -38,7 +41,7 @@ plot.sim.com.grid <- function(S.pool, N.pool, spat.agg, evenness, resolution, ce
    spat.plot
 }
 
-plot.sim.com.grid(S.pool=10, N.pool=500, spat.agg=0.02, evenness=1, resolution=10)
+plot.sim.com.grid(S.pool=10, N.pool=500, spat.agg=0.02, evenness=1, resolution=10, cell.id=1)
 
 # comment
 
