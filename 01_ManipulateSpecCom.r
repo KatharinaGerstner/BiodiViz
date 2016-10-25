@@ -10,3 +10,5 @@ manipulate(
   N = slider(500,1000,step=100),
   evenness = slider(1,3),
   spat.agg = slider(0.02,1))
+
+#
