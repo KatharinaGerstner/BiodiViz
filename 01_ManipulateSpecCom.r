@@ -1,4 +1,4 @@
-plot.sim.com <- function(S.pool, N.pool, spat.agg, evenness){
+plot.sim.com <- function(S.pool, N.pool, spat.agg, evenness, S.max){
   sim.com <- Sim.Thomas.Community(S = S.pool, N = N.pool, sigma=spat.agg, cv = evenness)
   
   # spatial point pattern plot
@@ -33,6 +33,7 @@ plot.sim.com <- function(S.pool, N.pool, spat.agg, evenness){
   SAC <- data.frame(ind=1:sum(SAD$abundance),SR=SAC.coleman(SAD$abundance))
   SAC.plot <- ggplot(data=SAC,aes(x=ind,y=SR)) +
     geom_line() +
+    ylim(0,S.max) +
     xlab("# individuals sampled") +
     ylab("Species richness") +
     ggtitle("SAC") +
@@ -52,6 +53,7 @@ plot.sim.com <- function(S.pool, N.pool, spat.agg, evenness){
   SAR.plot <- ggplot(data=SAR,aes(x=propArea,y=meanSpec)) +
     geom_line() +
     geom_ribbon(aes(ymin=meanSpec-1.96*sdSpec,ymax=meanSpec+1.96*sdSpec),alpha=0.3) +
+    ylim(0,S.max) +
     xlab("sampled area/total area") +
     ylab("Species richness") +
     ggtitle("SAR") +
@@ -69,10 +71,10 @@ plot.sim.com <- function(S.pool, N.pool, spat.agg, evenness){
 grid.arrange(SAD.plot, SAC.plot, SAR.plot, spat.plot,ncol=3, nrow=2, heights=c(1, 3), layout_matrix = lay)
 }
 
+S.max <- 50
 manipulate(
-  plot.sim.com(S.pool=S, N.pool=N, spat.agg=spat.agg, evenness=evenness),
-  S = slider(10,50,step=10),
+  plot.sim.com(S.pool=S, N.pool=N, spat.agg=spat.agg, evenness=evenness, S.max=S.max),
+  S = slider(10,S.max,step=10),
   N = slider(500,1000,step=100),
   evenness = slider(1,3),
   spat.agg = slider(0.02,1))
-#
