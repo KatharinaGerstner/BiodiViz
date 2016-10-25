@@ -14,7 +14,7 @@ plot.sim.com.grid <- function(S.pool, N.pool, spat.agg, evenness, resolution, ce
 
 plot.sim.com.grid(S.pool=10, N.pool=500, spat.agg=0.02, evenness=1, resolution=10)
 
-
+# comment
 
 manipulate(
   plot.sim.com.grid(S.pool=S, N.pool=N, spat.agg=0.02, evenness=1, 
