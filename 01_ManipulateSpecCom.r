@@ -78,3 +78,16 @@ manipulate(
   N = slider(500,1000,step=100),
   evenness = slider(1,3),
   spat.agg = slider(0.02,1))
+
+manipulate(
+   plot(cars, xlim=c(0,x.max)),  
+   x.max=slider(15,25))
+
+dat <- data.frame(x=0, y=0)[-1,]
+
+
+manipulate({
+   plot(cars)
+   xy <- manipulatorMouseClick()
+  if(!is.null(xy)) dat <- rbind(dat, c(xy$userX, xy$userY)); points(dat, pch=19)
+   dat})
