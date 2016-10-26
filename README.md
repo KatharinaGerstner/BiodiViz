@@ -1,8 +1,12 @@
 # **BiodiViz** -- Visualizing biodiversity patterns across spatial scales
 
-**Authors:** *Katharina Gerstner, Petr Keil*
+## Authors
 
-**Description:** This is an interactive tool that aims to visualize multiple
+*Katharina Gerstner, Petr Keil*
+
+## Description
+
+This is an interactive tool that aims to visualize multiple
 biodiversity patterns at multiple scales. The tool simulates locations of individuals of
 different species in a location (plot, area); the key parameters of the simulation 
 are **total number of individuals**, **total number of species**, **eveness of the
@@ -15,7 +19,9 @@ We use **Thomas model** to simulate point pattern distributions of individual sp
 
 The interactive interface relies on package `manipulate`.
 
-**License:** GNU GPL
+## License
+
+GNU GPL
 
 
 
