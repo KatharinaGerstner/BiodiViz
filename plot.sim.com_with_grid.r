@@ -17,7 +17,6 @@ plot.sim.com.grid <- function(S.pool, N.pool, spat.agg, evenness, resolution, ce
   grid.poly.gg = tidy(grid.poly)
   cell.poly.gg = tidy(cell.poly)
 
-
   SAD <- data.frame(specID = names(table(sim.com$SpecID)),
                     abundance = as.integer(table(sim.com$SpecID)))
   
@@ -30,7 +29,7 @@ plot.sim.com.grid <- function(S.pool, N.pool, spat.agg, evenness, resolution, ce
     geom_polygon(data=grid.poly.gg, aes(y=lat, x=long, group=group), 
                  colour="grey", fill=NA) +
     geom_polygon(data=cell.poly.gg, aes(y=lat, x=long, group=group), 
-                 colour="black", fill=NA, size=2) +
+                 colour="red", fill=NA, size=2) +
     theme(axis.text = element_text(size = rel(0.6)),
           axis.title = element_text(size = rel(0.6)),
           axis.text = element_text(size = rel(0.6)),
@@ -39,6 +38,12 @@ plot.sim.com.grid <- function(S.pool, N.pool, spat.agg, evenness, resolution, ce
           plot.title=element_text(size=rel(0.8)))
 
    spat.plot
+   
+   # lay <- rbind(c(1,2,3),
+   #              c(4,4,4))
+   #  grid.arrange(SAD.plot, SAC.plot, SAR.plot, spat.plot,
+   #               ncol=3, nrow=2, heights=c(1, 3), 
+   #               layout_matrix = lay)
 }
 
 plot.sim.com.grid(S.pool=10, N.pool=500, spat.agg=0.02, evenness=1, resolution=10, cell.id=1)

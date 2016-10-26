@@ -71,9 +71,10 @@ plot.sim.com <- function(S.pool, N.pool, spat.agg, evenness, S.max){
 
   lay <- rbind(c(1,2,3),
                c(4,4,4))
-grid.arrange(SAD.plot, SAC.plot, SAR.plot, spat.plot,
-             ncol=3, nrow=2, heights=c(1, 3), 
-             layout_matrix = lay)
+  
+  grid.arrange(SAD.plot, SAC.plot, SAR.plot, spat.plot,
+               ncol=3, nrow=2, heights=c(1, 3), 
+               layout_matrix = lay)
 }
 
 # ------------------------------------------------------------------------------
