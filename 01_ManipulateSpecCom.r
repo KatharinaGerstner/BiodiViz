@@ -30,6 +30,7 @@ plot.sim.com.grid <- function(S.pool, S.max=s.max, N.pool, spat.agg, evenness, r
   grid.poly.gg = tidy(grid.poly)
   cell.poly.gg = tidy(cell.poly)
 
+  ### plot SAD
   SAD.global <- data.frame(specID = names(table(sim.com$Species)),
                     abundance = as.integer(table(sim.com$Species)))
   SAD.cell <-  data.frame(specID = names(table(sim.com.cell$Species)),
@@ -43,16 +44,17 @@ plot.sim.com.grid <- function(S.pool, S.max=s.max, N.pool, spat.agg, evenness, r
     theme_biodiviz() 
 
   SAD.plot.cell <- ggplot(data=SAD.cell, aes(abundance)) +
-    geom_histogram(fill="red", bins=ceiling(max(SAD.cell$abundance/20))) +
+    geom_histogram(fill="red") +
     ggtitle("SAD_cell") +
     theme_biodiviz()
 
+  ### plot SAC
   SAC.global <- data.frame(ind=1:sum(SAD.global$abundance),SR=SAC(SAD.global$abundance))
   SAC.cell <- data.frame(ind=1:sum(SAD.cell$abundance),SR=SAC(SAD.cell$abundance))
   
   SAC.plot.global <- ggplot(data=SAC.global,aes(x=ind,y=SR)) +
     geom_line() +
-    ylim(0,S.max) +
+#    ylim(0,S.max) +
     xlab("# individuals sampled") +
     ylab("Species richness") +
     ggtitle("SAC_global") +
@@ -66,30 +68,29 @@ plot.sim.com.grid <- function(S.pool, S.max=s.max, N.pool, spat.agg, evenness, r
     ggtitle("SAC_cell") +
     theme_biodiviz()
   
-  ### SAR
+  ### plot SAR
   n <- 50
-  prop.a <- seq(0.05, 0.5, by = 0.05) # size of area samples in proportions of total area
+  prop.a <- c(0.01,seq(0.1, 1, by = 0.1)) # size of area samples in proportions of total area
   SAR.global <- data.frame(DivAR(sim.com, prop.A=prop.a, nsamples = n)) # Vector with mean and standard deviation of the following diversity indices: (1)
   SAR.cell <- data.frame(DivAR(sim.com.cell, prop.A=prop.a, nsamples = n)) # Vector with mean and standard deviation of the following diversity indices: (1)
   
   SAR.plot.global <- ggplot(data=SAR.global,aes(x=propArea,y=meanSpec)) +
     geom_line() +
+    geom_line(data=SAR.cell,aes(x=propArea/resolution^2,y=meanSpec),col="red", size=1.5) +
     geom_ribbon(aes(ymin=meanSpec-1.96*sdSpec,ymax=meanSpec+1.96*sdSpec),alpha=0.3) +
-    ylim(0,S.max) +
     xlab("sampled area/total area") +
     ylab("Species richness") +
-    ggtitle("SAR") +
+    ggtitle("SAR_global") +
     theme_biodiviz()
   
   SAR.plot.cell <- ggplot(data=SAR.cell,aes(x=propArea,y=meanSpec)) +
     geom_line() +
-    geom_ribbon(aes(ymin=meanSpec-1.96*sdSpec,ymax=meanSpec+1.96*sdSpec),alpha=0.3) +
-#    ylim(0,S.max) +
     xlab("sampled area/total area") +
     ylab("Species richness") +
-    ggtitle("SAR") +
+    ggtitle("SAR_cell") +
     theme_biodiviz()
   
+  # plot community
   spat.plot <- ggplot(sim.com, aes(X,Y, color=Species)) +
     geom_point() +
     guides(color="none") +
@@ -100,24 +101,20 @@ plot.sim.com.grid <- function(S.pool, S.max=s.max, N.pool, spat.agg, evenness, r
     geom_polygon(data=cell.poly.gg, aes(y=lat, x=long, group=group), 
                  colour="red", fill=NA, size=2) +
     theme_biodiviz()
-
-    lay <- rbind(c(1,2),
-                 c(3,4),
-                 c(5,6),
-                 c(7,7))
-     grid.arrange(SAD.plot.global, SAD.plot.cell, 
-                  SAC.plot.global, SAC.plot.cell,
-                  SAR.plot.global, SAR.plot.cell,
-                  spat.plot,
-                  ncol=ncol(lay), nrow=nrow(lay), heights=c(1, 1, 1, 3), 
-                  layout_matrix = lay)
+  
+  # plot all at once
+  lay <- rbind(c(1,2),
+               c(3,4),
+               c(5,6),
+               c(7,7))
+  grid.arrange(SAD.plot.global, SAD.plot.cell, 
+               SAC.plot.global, SAC.plot.cell,
+               SAR.plot.global, SAR.plot.cell,
+               spat.plot,
+               ncol=ncol(lay), nrow=nrow(lay), heights=c(1, 1, 1, 3), 
+               layout_matrix = lay)
 }
 
-#plot.sim.com.grid(S.pool=10, N.pool=500, spat.agg=0.02, evenness=1, resolution=10, cell.id=1)
-
-# comment
-
-S.max <- 500
 manipulate(
   plot.sim.com.grid(S.pool=S, S.max=S.max, N.pool=N, spat.agg=spat.agg, evenness=evenness, 
                     resolution = res, cell.id=cell),
@@ -129,7 +126,9 @@ manipulate(
   res = slider(2, 20))
 
 
- # sim.com <- Sim.Thomas.Community(S = 10, N = 100, sigma=0.02, cv = 1)[[1]]
+#plot.sim.com.grid(S.pool=10, N.pool=500, spat.agg=0.02, evenness=1, resolution=10, cell.id=1)
+
+# sim.com <- Sim.Thomas.Community(S = 10, N = 100, sigma=0.02, cv = 1)[[1]]
  # s.max <- 10
  # resolution <- 4
  # cell.id <- 2
