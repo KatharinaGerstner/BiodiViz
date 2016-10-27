@@ -23,18 +23,16 @@ path2wd <- set.list[[2]]
 ############################################################################
 needed_libs <- c("devtools", # download from github
                  "MoBspatial", # simulation of species communities
-#                 "iNEXT", # computes diversity estimates for rarefied and extrapolated samples
-                 "ggplot2",
+                 "ggplot2", # for plotting
                   "gridExtra", # for multiple plots using grid.arrange()
-                  "manipulate"
-#                 "reshape2", # melt lists and dataframes
-#                 "vegan" # for diversity indices
+                  "manipulate", # interactive plotting
+                  "raster", # creating a grid polygon
+                  "broom" # converting spatial polygon to dataframe for plotting with ggplot
 )
 usePackage <- function(p) {
-  if(p == "MoBspatial")    install_github('MoBiodiv/MoBspatial')    
-#  if(p=="iNEXT")   install_github('JohnsonHsieh/iNEXT')
-  if (!is.element(p, installed.packages()[,1]))    install.packages(p, dep = TRUE)
-  require(p, character.only = TRUE)
+  if(p == "MoBspatial")    install_github('MoBiodiv/MoBspatial')    # downloads the latest version of the package
+  if (!is.element(p, installed.packages()[,1]))    install.packages(p, dep = TRUE) # installs packages if not yet available
+  require(p, character.only = TRUE) # load packages
 }
 sapply(needed_libs,usePackage)
 
