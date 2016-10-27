@@ -37,13 +37,13 @@ plot.sim.com.grid <- function(S.pool, S.max=s.max, N.pool, spat.agg, evenness, r
   SAD.cell <- SAD.cell[SAD.cell$abundance != 0,]
   
   SAD.plot.global <- ggplot(data=SAD.global, aes(abundance)) +
-    geom_histogram(binwidth=10) +
+    geom_histogram(bins=ceiling(max(SAD.global$abundance/20))) +
     ggtitle("SAD_global") +
-    geom_histogram(data=SAD.cell, binwidth=10, fill="red") +
+    geom_histogram(data=SAD.cell, bins=ceiling(max(SAD.global$abundance/20)), fill="red") +
     theme_biodiviz() 
 
   SAD.plot.cell <- ggplot(data=SAD.cell, aes(abundance)) +
-    geom_histogram(fill="red", binwidth=5) +
+    geom_histogram(fill="red", bins=ceiling(max(SAD.cell$abundance/20))) +
     ggtitle("SAD_cell") +
     theme_biodiviz()
 
@@ -122,11 +122,11 @@ manipulate(
   plot.sim.com.grid(S.pool=S, S.max=S.max, N.pool=N, spat.agg=spat.agg, evenness=evenness, 
                     resolution = res, cell.id=cell),
   S = slider(10,500,step=10),
-  N = slider(500,10000,step=100),
-  evenness = slider(1,3),
+  N = slider(5000,100000,step=1000),
+  evenness = slider(0.5,3,step=0.5),
   spat.agg = slider(0.01,1),
-  res = slider(2, 20),
-  cell = slider(1, 100))
+  cell = slider(1, 400), # give error if cell > res^2 but manipulate doesn't work with dependent sliders, e.g cell=slider(1,res^2)
+  res = slider(2, 20))
 
 
  # sim.com <- Sim.Thomas.Community(S = 10, N = 100, sigma=0.02, cv = 1)[[1]]
