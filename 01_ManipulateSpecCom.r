@@ -11,7 +11,7 @@ theme_biodiviz <- function (base_size = 12, base_family = "") {
 
 plot.sim.com.grid <- function(S.pool, S.max=s.max, N.pool, spat.agg, evenness, resolution, cell.id){
   set.seed(229376)
-  sim.com <- Sim.Thomas.Community(S = S.pool, N = N.pool, sigma=spat.agg, cv = evenness)[[1]]
+  sim.com <- Sim.Thomas.Community(S = S.pool, N = N.pool, sigma=spat.agg, cv = evenness)
 
   # create the grid
   grid.rast <- raster(extent(c(0,1,0,1)), nrows=resolution, ncols=resolution)
@@ -21,20 +21,21 @@ plot.sim.com.grid <- function(S.pool, S.max=s.max, N.pool, spat.agg, evenness, r
   cell.poly <- as(grid.poly, "SpatialPolygons")[cell.id]
   
   # extract only the part of sim.com that falls into the focal grid
-  is.in <- over(SpatialPoints(sim.com[,1:2]), cell.poly)
+  is.in <- over(SpatialPoints(sim.com$census[,1:2]), cell.poly)
   is.in[is.na(is.in)] <- 0 
   is.in <- is.in == 1
-  sim.com.cell <- sim.com[is.in,]
+  sim.com.cell <- sim.com
+  sim.com.cell$census <- sim.com.cell$census[is.in,]
   
   # prepare the grid and the cell for ggplot
   grid.poly.gg = tidy(grid.poly)
   cell.poly.gg = tidy(cell.poly)
 
   ### plot SAD
-  SAD.global <- data.frame(specID = names(table(sim.com$Species)),
-                    abundance = as.integer(table(sim.com$Species)))
-  SAD.cell <-  data.frame(specID = names(table(sim.com.cell$Species)),
-                    abundance = as.integer(table(sim.com.cell$Species)))
+  SAD.global <- data.frame(specID = names(table(sim.com$census$Species)),
+                    abundance = as.integer(table(sim.com$census$Species)))
+  SAD.cell <-  data.frame(specID = names(table(sim.com.cell$census$Species)),
+                    abundance = as.integer(table(sim.com.cell$census$Species)))
   SAD.cell <- SAD.cell[SAD.cell$abundance != 0,]
   
   SAD.plot.global <- ggplot(data=SAD.global, aes(abundance)) +
@@ -49,8 +50,8 @@ plot.sim.com.grid <- function(S.pool, S.max=s.max, N.pool, spat.agg, evenness, r
     theme_biodiviz()
 
   ### plot SAC
-  SAC.global <- data.frame(ind=1:sum(SAD.global$abundance),SR=SAC(SAD.global$abundance))
-  SAC.cell <- data.frame(ind=1:sum(SAD.cell$abundance),SR=SAC(SAD.cell$abundance))
+  SAC.global <- data.frame(ind=1:sum(SAD.global$abundance),SR=SAC(sim.com))
+  SAC.cell <- data.frame(ind=1:sum(SAD.cell$abundance),SR=SAC(sim.com.cell))
   
   SAC.plot.global <- ggplot(data=SAC.global,aes(x=ind,y=SR)) +
     geom_line() +
@@ -91,7 +92,7 @@ plot.sim.com.grid <- function(S.pool, S.max=s.max, N.pool, spat.agg, evenness, r
     theme_biodiviz()
   
   # plot community
-  spat.plot <- ggplot(sim.com, aes(X,Y, color=Species)) +
+  spat.plot <- ggplot(sim.com$census, aes(X,Y, color=Species)) +
     geom_point() +
     guides(color="none") +
     xlab("") +
@@ -116,7 +117,7 @@ plot.sim.com.grid <- function(S.pool, S.max=s.max, N.pool, spat.agg, evenness, r
 }
 
 manipulate(
-  plot.sim.com.grid(S.pool=S, S.max=S.max, N.pool=N, spat.agg=spat.agg, evenness=evenness, 
+  plot.sim.com.grid(S.pool=S, S.max=500, N.pool=N, spat.agg=spat.agg, evenness=evenness, 
                     resolution = res, cell.id=cell),
   S = slider(10,500,step=10),
   N = slider(5000,100000,step=1000),
@@ -128,7 +129,7 @@ manipulate(
 
 #plot.sim.com.grid(S.pool=10, N.pool=500, spat.agg=0.02, evenness=1, resolution=10, cell.id=1)
 
-# sim.com <- Sim.Thomas.Community(S = 10, N = 100, sigma=0.02, cv = 1)[[1]]
- # s.max <- 10
- # resolution <- 4
- # cell.id <- 2
+# sim.com <- Sim.Thomas.Community(S = 10, N = 100, sigma=0.02, cv = 1)
+# s.max <- 10
+# resolution <- 4
+# cell.id <- 2
