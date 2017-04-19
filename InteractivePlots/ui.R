@@ -33,13 +33,7 @@ require(broom) # converting spatial polygon to dataframe for plotting with ggplo
                        min = 0.5, max = 3, value = 1, step= 0.5),
            
            sliderInput("spatagg", "Spatial Agregation",
-                       min = 0.01, max = 1, value = 0.01, step= 0.01),
-           
-           sliderInput("Resolution", "Resolution",
-                       min = 2, max = 6, value = 2),
-
-           sliderInput("cell", "Cell",
-                       min = 1, max = 36, value = 1)
+                       min = 0.01, max = 1, value = 0.01, step= 0.01)
            
     ),
     column(8, plotOutput("InteractivePlot", height="700px"))
