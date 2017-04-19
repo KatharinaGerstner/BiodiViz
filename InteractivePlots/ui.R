@@ -9,10 +9,6 @@
 
 library(shiny)
 library(MoBspatial)
-require(ggplot2) # for plotting
-require(gridExtra) # for multiple plots using grid.arrange()
-require(raster) # creating a grid polygon
-require(broom) # converting spatial polygon to dataframe for plotting with ggplot
 
 # Define UI for slider demo application
   
@@ -39,18 +35,12 @@ require(broom) # converting spatial polygon to dataframe for plotting with ggplo
                        min = 0.5, max = 3, value = 1, step= 0.5),
            
            sliderInput("spatagg", "Spatial Agregation",
-                       min = 0.01, max = 1, value = 0.01, step= 0.01),
-           
-           sliderInput("Resolution", "Resolution",
-                       min = 2, max = 6, value = 2),
-
-           sliderInput("cell", "Cell",
-                       min = 1, max = 36, value = 1),
+                       min = 0.0, max = 1, value = 0.1, step= 0.1),
            
            # Action button
            submitButton("Restart Simulation")
            
     ),
-    column(8, plotOutput("InteractivePlot", height="700px"))
+    column(8, plotOutput("InteractivePlot", height="600px"))
   )  
 )
