@@ -193,7 +193,7 @@ shinyServer(function(input, output) {
   #   plot(abund1, method = "rank")
   # })
   #   
-    sim.com <- sim_thomas_community(s_pool = input$S, n_sim = input$N, sigma=input$spatagg, sad_coef=list(cv_abund = input$cv.abund), fix_s_sim = T)
+    sim.com <- sim_thomas_community(s_pool = input$S, n_sim = input$N, sigma=input$spatagg, sad_type = input$select, sad_coef=list(cv_abund = input$cv.abund), fix_s_sim = T)
     
     # create the grid
     grid.rast <- raster(extent(c(0,1,0,1)), nrows=input$Resolution, ncols=input$Resolution)

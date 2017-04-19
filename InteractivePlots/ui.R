@@ -22,7 +22,13 @@ require(broom) # converting spatial polygon to dataframe for plotting with ggplo
             tags$h2("Visualization of biodiversity pattern"),
     fluidRow(
     column(4, 
-           # Simple integer interval
+           # Check box
+           selectInput("select", label = h3("SAD type"), 
+                       choices = list("Log normal" = "lnorm", "bs" = "bs", "gamma"="gamma", "Geometric"="geom", "ls"="ls",
+                                      "mzsm"="mzsm", "multinomial"="nbinom", "pareto"="pareto", "poison log"="poilog", 
+                                      "power"="power", "volkov"="volkov", "powbend"="powbend", "weibull"="weibull"), selected = "lnorm"),
+           
+           # Slider inputs
            sliderInput("S", "Species Richness",
                        min=10, max=500, value=50, step=10),
            
@@ -39,7 +45,10 @@ require(broom) # converting spatial polygon to dataframe for plotting with ggplo
                        min = 2, max = 6, value = 2),
 
            sliderInput("cell", "Cell",
-                       min = 1, max = 36, value = 1)
+                       min = 1, max = 36, value = 1),
+           
+           # Action button
+           submitButton("Restart Simulation")
            
     ),
     column(8, plotOutput("InteractivePlot", height="700px"))
