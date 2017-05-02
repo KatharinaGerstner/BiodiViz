@@ -8,7 +8,7 @@
 #
 
 library(shiny)
-library(MoBspatial)
+library(mobsim)
 
 # Define UI for slider demo application
   
