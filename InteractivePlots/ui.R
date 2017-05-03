@@ -20,9 +20,9 @@ library(MoBspatial)
     column(4, 
            # Check box
            selectInput("select", label = h3("SAD type"), 
-                       choices = list("Log normal" = "lnorm", "bs" = "bs", "gamma"="gamma", "Geometric"="geom", "ls"="ls",
-                                      "mzsm"="mzsm", "multinomial"="nbinom", "pareto"="pareto", "poison log"="poilog", 
-                                      "power"="power", "volkov"="volkov", "powbend"="powbend", "weibull"="weibull"), selected = "lnorm"),
+                       choices = list("Log normal" = "lnorm", "ls"="ls"), selected = "lnorm"), #"bs" = "bs", "gamma"="gamma", "Geometric"="geom", 
+                                      # "mzsm"="mzsm", "multinomial"="nbinom", "pareto"="pareto", "poison log"="poilog", 
+                                      # "power"="power", "volkov"="volkov", "powbend"="powbend", "weibull"="weibull"
            
            # Slider inputs
            sliderInput("S", "Species Richness",

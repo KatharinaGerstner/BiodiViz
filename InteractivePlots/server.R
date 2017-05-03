@@ -10,8 +10,8 @@
 library(shiny)
 library(ggplot2)
 library(RColorBrewer)
-library(MoBspatial)
-require(gridExtra) # for multiple plots using grid.arrange()
+library(devtools)
+install_github('MoBiodiv/mobsim')    # downloads the latest version of the packagerequire(gridExtra) # for multiple plots using grid.arrange()
 require(sp) # creating a grid polygon
 require(broom) # converting spatial polygon to dataframe for plotting with ggplot
 
