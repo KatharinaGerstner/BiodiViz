@@ -19,7 +19,6 @@ shinyServer(function(input, output) {
   #   ...
   # }
   
-  output$introduction <- 
    ## plot theme
   output$InteractivePlot <- renderPlot({
     set.seed(229376)
