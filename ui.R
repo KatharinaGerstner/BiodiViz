@@ -27,10 +27,10 @@ fluidPage(
                   min=500, max=10000, value=1000, step=100),
       
       sliderInput("cv.abund", "CV(SAD)",
-                  min = 0.5, max = 3, value = 1, step= 0.5),
+                  min = 0.25, max = 3, value = 1, step= 0.25),
       
       sliderInput("spatagg", "Spatial Agregation",
-                  min = 0.0, max = 1, value = 0.1, step= 0.1),
+                  min = 0.0, max = 3, value = 0.1, step= 0.2),
       
       # Action button
       submitButton("Restart Simulation")#,
