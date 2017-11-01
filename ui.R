@@ -30,7 +30,7 @@ fluidPage(
                   min = 0.25, max = 3, value = 1, step= 0.25),
       
       sliderInput("spatagg", "Spatial Agregation",
-                  min = 0.0, max = 3, value = 0.1, step= 0.2),
+                  min = 0.0, max = 1, value = 0.1, step= 0.01),
       
       # Action button
       submitButton("Restart Simulation")#,
