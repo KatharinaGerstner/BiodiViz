@@ -1,7 +1,6 @@
 theme_biodiviz <- function (base_size = 12, base_family = "") {
   theme_bw() +
-    theme(axis.text = element_text(size = rel(0.6)),
-          axis.title = element_text(size = rel(0.6)),
+    theme(axis.title = element_text(size = rel(0.6)),
           axis.text = element_text(size = rel(0.6)),
           legend.text = element_text(size = rel(0.6)),
           legend.position = "bottom",
@@ -11,7 +10,7 @@ theme_biodiviz <- function (base_size = 12, base_family = "") {
 
 plot.sim.com.grid <- function(S.pool, S.max=s.max, N.pool, spat.agg, evenness, resolution, cell.id){
   set.seed(229376)
-  sim.com <- Sim.Thomas.Community(S = S.pool, N = N.pool, sigma=spat.agg, cv = evenness)
+  sim.com <- sim_thomas_community(s_pool = S.pool, n_sim = N.pool, sigma=spat.agg, sad_coef=list(cv_abund = evenness))
 
   # create the grid
   grid.rast <- raster(extent(c(0,1,0,1)), nrows=resolution, ncols=resolution)
@@ -26,18 +25,18 @@ plot.sim.com.grid <- function(S.pool, S.max=s.max, N.pool, spat.agg, evenness, r
   is.in <- is.in == 1
   sim.com.cell <- sim.com
   sim.com.cell$census <- sim.com.cell$census[is.in,]
+  sim.com.cell$census$species <- factor(sim.com.cell$census$species)
   
   # prepare the grid and the cell for ggplot
   grid.poly.gg = tidy(grid.poly)
   cell.poly.gg = tidy(cell.poly)
 
   ### plot SAD
-  SAD.global <- data.frame(specID = names(table(sim.com$census$Species)),
-                    abundance = as.integer(table(sim.com$census$Species)))
-  SAD.cell <-  data.frame(specID = names(table(sim.com.cell$census$Species)),
-                    abundance = as.integer(table(sim.com.cell$census$Species)))
-  SAD.cell <- SAD.cell[SAD.cell$abundance != 0,]
-  
+  SAD.global <- data.frame(specID = names(table(sim.com$census$species)),
+                    abundance = as.integer(table(sim.com$census$species)))
+  SAD.cell <-  data.frame(specID = names(table(sim.com.cell$census$species)),
+                    abundance = as.integer(table(sim.com.cell$census$species)))
+
   SAD.plot.global <- ggplot(data=SAD.global, aes(abundance)) +
     geom_histogram(bins=ceiling(max(SAD.global$abundance/20))) +
     ggtitle("SAD_global") +
@@ -50,10 +49,10 @@ plot.sim.com.grid <- function(S.pool, S.max=s.max, N.pool, spat.agg, evenness, r
     theme_biodiviz()
 
   ### plot SAC
-  SAC.global <- data.frame(ind=1:sum(SAD.global$abundance),SR=SAC(sim.com))
-  SAC.cell <- data.frame(ind=1:sum(SAD.cell$abundance),SR=SAC(sim.com.cell))
+  SAC.global <- spec_sample_curve(sim.com, method="accumulation")
+  SAC.cell <- spec_sample_curve(sim.com.cell, method="accumulation")
   
-  SAC.plot.global <- ggplot(data=SAC.global,aes(x=ind,y=SR)) +
+  SAC.plot.global <- ggplot(data=SAC.global,aes(x=n,y=spec_accum)) +
     geom_line() +
 #    ylim(0,S.max) +
     xlab("# individuals sampled") +
@@ -61,7 +60,7 @@ plot.sim.com.grid <- function(S.pool, S.max=s.max, N.pool, spat.agg, evenness, r
     ggtitle("SAC_global") +
     theme_biodiviz()
   
-  SAC.plot.cell <- ggplot(data=SAC.cell,aes(x=ind,y=SR)) +
+  SAC.plot.cell <- ggplot(data=SAC.cell,aes(x=n,y=spec_accum)) +
     geom_line() +
 #   ylim(0,S.max) +
     xlab("# individuals sampled") +
@@ -72,19 +71,19 @@ plot.sim.com.grid <- function(S.pool, S.max=s.max, N.pool, spat.agg, evenness, r
   ### plot SAR
   n <- 50
   prop.a <- c(0.01,seq(0.1, 1, by = 0.1)) # size of area samples in proportions of total area
-  SAR.global <- data.frame(DivAR(sim.com, prop.A=prop.a, nsamples = n)) # Vector with mean and standard deviation of the following diversity indices: (1)
-  SAR.cell <- data.frame(DivAR(sim.com.cell, prop.A=prop.a, nsamples = n)) # Vector with mean and standard deviation of the following diversity indices: (1)
+  SAR.global <- data.frame(divar(sim.com, prop_area=prop.a, n_samples = n)) # Vector with mean and standard deviation of the following diversity indices: (1)
+  SAR.cell <- data.frame(divar(sim.com.cell, prop_area=prop.a, n_samples = n)) # Vector with mean and standard deviation of the following diversity indices: (1)
   
-  SAR.plot.global <- ggplot(data=SAR.global,aes(x=propArea,y=meanSpec)) +
+  SAR.plot.global <- ggplot(data=SAR.global,aes(x=prop_area,y=m_species)) +
     geom_line() +
-    geom_line(data=SAR.cell,aes(x=propArea/resolution^2,y=meanSpec),col="red", size=1.5) +
-    geom_ribbon(aes(ymin=meanSpec-1.96*sdSpec,ymax=meanSpec+1.96*sdSpec),alpha=0.3) +
+    geom_line(data=SAR.cell,aes(x=prop_area/resolution^2,y=m_species),col="red", size=1.5) +
+    geom_ribbon(aes(ymin=m_species-1.96*sd_species,ymax=m_species+1.96*sd_species),alpha=0.3) +
     xlab("sampled area/total area") +
     ylab("Species richness") +
     ggtitle("SAR_global") +
     theme_biodiviz()
   
-  SAR.plot.cell <- ggplot(data=SAR.cell,aes(x=propArea,y=meanSpec)) +
+  SAR.plot.cell <- ggplot(data=SAR.cell,aes(x=prop_area,y=m_species)) +
     geom_line() +
     xlab("sampled area/total area") +
     ylab("Species richness") +
@@ -92,7 +91,7 @@ plot.sim.com.grid <- function(S.pool, S.max=s.max, N.pool, spat.agg, evenness, r
     theme_biodiviz()
   
   # plot community
-  spat.plot <- ggplot(sim.com$census, aes(X,Y, color=Species)) +
+  spat.plot <- ggplot(sim.com$census, aes(x,y, color=species)) +
     geom_point() +
     guides(color="none") +
     xlab("") +

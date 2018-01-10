@@ -22,7 +22,7 @@ path2wd <- set.list[[2]]
 ### 0. Load and install all needed libraries
 ############################################################################
 needed_libs <- c("devtools", # download from github
-                 "MoBspatial", # simulation of species communities
+                 "mobsim", # simulation of species communities
                  "ggplot2", # for plotting
                   "gridExtra", # for multiple plots using grid.arrange()
                   "manipulate", # interactive plotting
@@ -30,7 +30,7 @@ needed_libs <- c("devtools", # download from github
                   "broom" # converting spatial polygon to dataframe for plotting with ggplot
 )
 usePackage <- function(p) {
-  if(p == "MoBspatial")    install_github('MoBiodiv/MoBspatial')    # downloads the latest version of the package
+  if(p == "mobsim") {install_github('MoBiodiv/mobsim')}  
   if (!is.element(p, installed.packages()[,1]))    install.packages(p, dep = TRUE) # installs packages if not yet available
   require(p, character.only = TRUE) # load packages
 }
