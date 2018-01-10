@@ -15,7 +15,7 @@ abundances** and **aggregation of species**.
 (2) plots biodiversity patterns such as species-abundance distributions (SAD), species
 accummulation curves (SAC), species-area relationships (SAR) and alike for a selected grid cell and for the entire region. 
 
-The package that is used to simulate the community is **Felix May**'s `MoBspatial`. 
+The package that is used to simulate the community is **Felix May**'s `mobsim`. 
 We use **Thomas model** to simulate point pattern distributions of individual species.
 
 The interactive interface relies on package `manipulate`.
